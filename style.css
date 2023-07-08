@@ -1,4 +1,9 @@
 h1{
-    color: red;
-    font-family:fantasy;
+    color: rgba(47, 255, 0, 0.718);
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+body{
+    background-image: href"C:\Users\metro\Desktop\275021915_4869147336526101_3062764630004256745_n.jpg";
+    background-color: blueviolet;
 }
