@@ -42,8 +42,7 @@ def search_id_in_website():
         )
         search_bar.send_keys(search_id)
 
-        # Submit the search form with a delay of 2 seconds
-        time.sleep(3)
+        # Submit the search form
         search_bar.send_keys(Keys.RETURN)
 
         # Wait for the search results to load
@@ -125,15 +124,8 @@ def search_id_in_website():
                 (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[8]/th[2]'))
         )
 
-        # Load the existing Excel file
-        workbook = openpyxl.load_workbook(existing_excel_file)
-
-        # Select the appropriate sheet in the Excel file
-        sheet = workbook.active
-
-        # Find the next empty row
-        next_row = sheet.max_row + 1
-        next_column = sheet.max_column + 1
+        # Use the already loaded Excel file and next empty row
+        next_row += 1
 
         # division
         m_s = WebDriverWait(driver, 3).until(
@@ -198,11 +190,9 @@ def search_id_in_website():
 
     except Exception as e:
         print("An error occurred:", e)
+        raise
 
-    finally:
-        # Close the webdriver
-        if 'driver' in locals():
-            driver.quit()
+    # No changes needed
 
 
 if __name__ == "__main__":
