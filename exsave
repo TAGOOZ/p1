@@ -1,0 +1,209 @@
+
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import openpyxl  # Import openpyxl library for working with Excel files
+import time
+
+
+def search_id_in_website():
+    # Take ID from the user
+    global driver
+    search_id = input("Enter the ID to search: ")
+
+    # Set the path to the downloaded ChromeDriver executable
+    chromedriver_path = r"D:\scraping\p1\chromedriver.exe"
+
+    # Specify the path to the existing Excel file
+    existing_excel_file = "search_results.xlsx"
+
+    # Create ChromeOptions
+    chrome_options = webdriver.ChromeOptions()
+    # Uncomment this line to make the browser headless
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+
+    try:
+        # Initialize the ChromeService
+        service = webdriver.ChromeService(executable_path=chromedriver_path)
+
+        # Initialize the webdriver with the specified path and options
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+
+        # Load the website
+        driver.get("https://g12.emis.gov.eg/")
+
+        # Find the search bar element and enter the ID
+        search_bar = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.NAME, "SeatingNo"))
+        )
+        search_bar.send_keys(search_id)
+
+        # Submit the search form with a delay of 2 seconds
+        time.sleep(3)
+        search_bar.send_keys(Keys.RETURN)
+
+        # Wait for the search results to load
+        # time.sleep(3)
+
+        # locate the id
+        seatNUM = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Result"]/div/div[2]/div[1]/div/table/tbody/tr[1]/td'))
+        )
+
+        # locate the name
+        name = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Result"]/div/div[2]/div[1]/div/table/tbody/tr[2]/td'))
+        )
+
+        # locate the school
+        school = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Result"]/div/div[2]/div[1]/div/table/tbody/tr[3]/td'))
+        )
+
+        # locate the adminMix
+        adminM1 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Result"]/div/div[2]/div[1]/div/table/tbody/tr[4]/td'))
+        )
+        adminM2 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Result"]/div/div[2]/div[1]/div/table/tbody/tr[5]/td'))
+        )
+
+        # locate the status
+        status = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Result"]/div/div[1]/div/h2'))
+        )
+
+        # locate Arabic
+        arabic = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[1]/th[2]'))
+        )
+
+        # locate lan1
+        lan1 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[2]/th[2]'))
+        )
+
+        # locate lan2
+        lan2 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[3]/th[2]/span'))
+        )
+
+        # locate x1
+        x1 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[4]/th[2]/span'))
+        )
+
+        # locate x2
+        x2 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[5]/th[2]'))
+        )
+
+        # locate x3
+        x3 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[6]/th[2]'))
+        )
+
+        # locate x4
+        x4 = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[7]/th[2]'))
+        )
+
+        # locate total
+        total = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[8]/th[2]'))
+        )
+
+        # Load the existing Excel file
+        workbook = openpyxl.load_workbook(existing_excel_file)
+
+        # Select the appropriate sheet in the Excel file
+        sheet = workbook.active
+
+        # Find the next empty row
+        next_row = sheet.max_row + 1
+        next_column = sheet.max_column + 1
+
+        # division
+        m_s = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="Result"]/div/div[2]/div[2]/div[1]/div/div/div/table/tbody/tr[4]/th[1]'))
+        )
+
+        if m_s.text == "الكيمياء":
+            sheet.cell(row=next_row, column=5, value="علمي رياضة")
+            sheet.cell(row=next_row, column=10, value=x1.text)
+            sheet.cell(row=next_row, column=11, value=x2.text)
+            sheet.cell(row=next_row, column=12, value=x3.text)
+            sheet.cell(row=next_row, column=13, value=x4.text)
+            sheet.cell(row=next_row, column=14, value="غير مقرر")
+            sheet.cell(row=next_row, column=15, value="غير مقرر")
+            sheet.cell(row=next_row, column=16, value="غير مقرر")
+            sheet.cell(row=next_row, column=17, value="غير مقرر")
+            sheet.cell(row=next_row, column=18, value="غير مقرر")
+            sheet.cell(row=next_row, column=19, value="غير مقرر")
+
+        elif m_s.text == "الأحياء":
+            sheet.cell(row=next_row, column=5, value="علمي علوم")
+            sheet.cell(row=next_row, column=10, value=x3.text)
+            sheet.cell(row=next_row, column=11, value=x4.text)
+            sheet.cell(row=next_row, column=12, value="غير مقرر")
+            sheet.cell(row=next_row, column=13, value="غير مقرر")
+            sheet.cell(row=next_row, column=14, value=x1.text)
+            sheet.cell(row=next_row, column=15, value=x2.text)
+            sheet.cell(row=next_row, column=16, value="غير مقرر")
+            sheet.cell(row=next_row, column=17, value="غير مقرر")
+            sheet.cell(row=next_row, column=18, value="غير مقرر")
+            sheet.cell(row=next_row, column=19, value="غير مقرر")
+
+        elif m_s.text == "التاريخ":
+            sheet.cell(row=next_row, column=5, value="أدبي")
+            sheet.cell(row=next_row, column=10, value="غير مقرر")
+            sheet.cell(row=next_row, column=11, value="غير مقرر")
+            sheet.cell(row=next_row, column=12, value="غير مقرر")
+            sheet.cell(row=next_row, column=13, value="غير مقرر")
+            sheet.cell(row=next_row, column=14, value="غير مقرر")
+            sheet.cell(row=next_row, column=15, value="غير مقرر")
+            sheet.cell(row=next_row, column=16, value=x1.text)
+            sheet.cell(row=next_row, column=17, value=x2.text)
+            sheet.cell(row=next_row, column=18, value=x3.text)
+            sheet.cell(row=next_row, column=19, value=x4.text)
+
+        # Write data to the Excel file
+        sheet.cell(row=next_row, column=1, value=seatNUM.text)
+        sheet.cell(row=next_row, column=2, value=name.text)
+        sheet.cell(row=next_row, column=3, value=school.text)
+        sheet.cell(row=next_row, column=4, value=adminM1.text + " " + adminM2.text)
+        sheet.cell(row=next_row, column=6, value=status.text)
+        sheet.cell(row=next_row, column=7, value=arabic.text)
+        sheet.cell(row=next_row, column=8, value=lan1.text)
+        sheet.cell(row=next_row, column=9, value=lan2.text)
+        sheet.cell(row=next_row, column=20, value=total.text)
+
+        # Save the changes
+        workbook.save(existing_excel_file)
+
+        print(f"Results have been added to {existing_excel_file}")
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+    finally:
+        # Close the webdriver
+        if 'driver' in locals():
+            driver.quit()
+
+
+if __name__ == "__main__":
+    search_id_in_website()
